@@ -1,0 +1,15 @@
+{
+  "name": "Rock64-R64.GPIO",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/wise-introvert/Rock64-R64.GPIO.git",
+  "author": "Wise Introvert <fardeen.wi.panjwani@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "scripts": {
+    "dev:main": "nodemon --exec \"python3\" ./index.py",
+    "dev:libg": "nodemon --exec \"python3\" ./libgpiod.py"
+  }
+}
