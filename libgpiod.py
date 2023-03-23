@@ -36,11 +36,14 @@ def main(legacy):
     print("""Cloning libgpiod repository to {}
 """.format(build_dir))
 
+    print("build_dir: {}".format(build_dir))
     try:
-        shell.chdir(build_dir)
+      shell.chdir(build_dir)
+      shell.run_command("git clone git://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git .")
     except:
-        os.mkdir(build_dir)
-    shell.run_command("git clone git://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git .")
+      shell.run_command("git clone git://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git " + build_dir)
+
+    os.chdir(build_dir.strip())
 
     if legacy:
         shell.run_command("git checkout v1.4.2 -b v1.4.2")
@@ -50,8 +53,10 @@ def main(legacy):
 
     include_path = shell.run_command("python3 -c \"from sysconfig import get_paths; print(get_paths()['include'])\"", return_output=True)
 
+    print("\n\n\t\t===> include_path: {}".format(include_path))
+    print("\n\n\t\t===> {}/autogen.sh --enable-tools=yes --prefix=/usr/local/ --enable-bindings-python CFLAGS=\"-I/{}\" && make && sudo make install && sudo ldconfig\n\n".format(build_dir.strip(), include_path))
     shell.run_command("export PYTHON_VERSION=3")
-    shell.run_command("./autogen.sh --enable-tools=yes --prefix=/usr/local/ --enable-bindings-python CFLAGS=\"-I/{}\" && make && sudo make install && sudo ldconfig".format(include_path))
+    shell.run_command("{}/autogen.sh --enable-tools=yes --prefix=/usr/local/ --enable-bindings-python CFLAGS=\"-I/{}\" && make && sudo make install && sudo ldconfig".format(build_dir.strip(), include_path))
 
     if shell.exists("bindings/python/.libs"):
         # This is not the right way to do this, but it works
